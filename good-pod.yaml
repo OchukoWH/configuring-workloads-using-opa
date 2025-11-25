@@ -5,6 +5,7 @@ metadata:
   labels:
     run: good-pod
   name: good-pod
+  namespace: marketing
 spec:
   containers:
   - image: gcr.io/google-containers/pause:3.2

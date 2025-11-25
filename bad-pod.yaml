@@ -5,6 +5,7 @@ metadata:
   labels:
     run: bad-pod
   name: bad-pod
+  namespace: marketing
 spec:
   containers:
   - image: nginx
