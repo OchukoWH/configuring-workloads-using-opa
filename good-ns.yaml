@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: marketing
+  labels:
+    project: "cloud-platform"
+    environment: "production"
+    maintainer: "team-marketing"
+
