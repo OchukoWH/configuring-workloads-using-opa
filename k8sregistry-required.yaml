@@ -1,0 +1,38 @@
+apiVersion: templates.gatekeeper.sh/v1
+kind: ConstraintTemplate
+metadata:
+  name: k8srequiredregistry
+spec:
+  crd:
+    spec:
+      names:
+        kind: K8sRequiredRegistry
+      validation:
+        openAPIV3Schema:
+          type: object
+          properties:
+            registry:
+              type: string
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package k8srequiredregistry
+
+        violation[{"msg": msg}] {
+          input.review.kind.kind == "Pod"
+          required := input.parameters.registry
+          container := input.review.object.spec.containers[_]
+          image := container.image
+          not startswith(image, required)
+          msg := sprintf("Forbidden registry: %v. Must start with %v", [image, required])
+        }
+
+        violation[{"msg": msg}] {
+          input.review.kind.kind != "Pod"
+          pod := input.review.object.spec.template.spec
+          required := input.parameters.registry
+          container := pod.containers[_]
+          image := container.image
+          not startswith(image, required)
+          msg := sprintf("Forbidden registry: %v. Must start with %v", [image, required])
+        }
